@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History</title>
+</head>
+<body>
+    <h1>Order History</h1>
+    <form method="GET" action="{% url 'order_history' %}">
+        <label for="start_date">Start Date:</label>
+        <input type="date" id="start_date" name="start_date" value="{{ request.GET.start_date }}">
+
+        <label for="end_date">End Date:</label>
+        <input type="date" id="end_date" name="end_date" value="{{ request.GET.end_date }}">
+
+        <button type="submit">Filter</button>
+    </form>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Is Paid</th>
+                <th>Payment Date</th>
+                <th>Total Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{% if order.is_paid %} Yes {% else %} No {% endif %}</td>
+                <td>{{ order.payment_date }}</td>
+                <td>{{ order.calculate_total_price }}</td>
+                <td><a href="{% url 'order_details' order.id %}">View Details</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

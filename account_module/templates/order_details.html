@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .invoice {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header,
+        .footer {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1,
+        .footer p {
+            margin: 0;
+        }
+        .details {
+            margin-bottom: 20px;
+        }
+        .details h2 {
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice">
+        <div class="header">
+            <h1>Order Invoice</h1>
+        </div>
+        <div class="details">
+            <h2>Order ID: {{ order.id }}</h2>
+            <p><strong>Is Paid:</strong> {% if order.is_paid %} Yes {% else %} No {% endif %}</p>
+            <p><strong>Payment Date:</strong> {{ order.payment_date }}</p>
+            <p><strong>Total Price:</strong> {{ order.calculate_total_price }}</p>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detail in order.orderdetail_set.all %}
+                <tr>
+                    <td>{{ detail.product.title }}</td>
+                    <td>{{ detail.product.price }}</td>
+                    <td>{{ detail.count }}</td>
+                    <td>{{ detail.get_total_price }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="footer">
+            <p>Thank you for your order!</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,58 @@
+{% extends 'shared/_layout.html' %}
+{% load static %}
+
+{% block title %}
+    درباره ما
+{% endblock %}
+
+
+{% block content %}
+    <div id="contact-page" class="container">
+        <div class="bg">
+
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="contact-info">
+                        <h2 class="title text-center">لوگـو شرکت</h2>
+                        <img src="{{ site_setting.site_logo.url }}" class="img-responsive">
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="about">
+                        <h2 class="title text-center">دربـاره ما</h2>
+                        <p class="about-desc">
+                            {{ site_setting.about_us_text }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12 about-address">
+                    <address>
+                        <p>
+                            {{ site_setting.address }}|
+                            تلفن تماس : {{ site_setting.phone }} |
+                            {% if site_setting.fax %}
+                                فکس : {{ site_setting.fax }} |
+                            {% endif %}
+                            {% if site_setting.email %}
+                                ایمیـل : {{ site_setting.email }}
+                            {% endif %}
+                        </p>
+                    </address>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="container">
+                    <div class="col-sm-12" style="overflow: hidden; margin-bottom: 40px"><h2 class="title text-center">
+                        مـا اینجـا هستیـم ... </h2>
+                       
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d282.5604634439467!2d59.18883532831775!3d33.72751529957951!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f10f97b98aa9821%3A0xfdb858edfb0e703!2z2KfbjNiv2Ycg2KLZhCDYsdin24zYp9mG2Yc!5e0!3m2!1sfa!2s!4v1713913423623!5m2!1sfa!2s" width="1500" height="600" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

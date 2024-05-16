@@ -67,9 +67,6 @@
         margin: 0 auto; /* مرکز چین کردن فرم */
     }</style>
     <div class="profile-form">
-        <form id="profile-form" method="post" action="{% url 'request_payment' %}" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ profile_form.as_p }}
             <section id="do_action">
                 <div class="container">
                     <div class="row">
@@ -79,15 +76,12 @@
                                     <li>مجمـوع سبـد خریـد <span>{{ sum|three_digits_currency }}</span></li>
                                 </ul>
                                 <!-- <a class="btn btn-default check_out" href="{% url 'request_payment' %}">پرداخت</a> -->
-                                <button type="submit" class="btn btn-primary">پرداخت</button>
+                                <a class="btn btn-default check_out" href="{% url 'user_basket_page2' %}">مرحله بعدی</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
-            <!-- <button type="submit" class="btn btn-primary">پرداخت</button> -->
-            <!-- <button type="button" onclick="validateAndSubmit()" class="btn btn-primary">پرداخت</button> -->
-        </form>
     </div>
     
     

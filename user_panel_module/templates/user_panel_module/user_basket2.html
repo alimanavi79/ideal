@@ -1,0 +1,25 @@
+{% extends 'shared/_layout.html' %}
+
+{% block title %}
+    سبد خرید
+{% endblock %}
+
+{% block content %}
+<section id="cart_items">
+    <div class="container">
+        <div class="breadcrumbs">
+            <ol class="breadcrumb">
+                <li><a href="#">خانـه</a></li>
+                <li >پرداخت</li>
+                <li class="active">آدرس</li>
+            </ol>
+        </div><!--/breadcrums-->                
+    </div>
+</section>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ profile_form.as_p }}
+        <button type="submit" class="btn btn-primary">ثبت</button>
+    </form>
+    
+{% endblock %}

@@ -26,8 +26,9 @@
                             <td class="text-right">{{ detail.product.title }}</td>
                             <td class="text-right">{{ detail.count }}</td>
                             <td class="text-right">{{ detail.final_price|three_digits_currency }}</td>
+                            {% endfor %}
                         </tr>
-                    {% endfor %}
+              
 
                 </table>
             </div>

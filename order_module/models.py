@@ -1,6 +1,8 @@
 from django.db import models
 from account_module.models import User
 from product_module.models import Product
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 
 # Create your models here.
@@ -17,13 +19,13 @@ class Order(models.Model):
         total_amount = 0
         if self.is_paid:
             for order_detail in self.orderdetail_set.all():
-                total_amount += order_detail.final_price * order_detail.count
+                total_amount += order_detail.final_price
         else:
             for order_detail in self.orderdetail_set.all():
-                total_amount += order_detail.product.price * order_detail.count
+                total_amount += order_detail.product.price
 
         return total_amount
-
+                
     class Meta:
         verbose_name = 'سبد خرید'
         verbose_name_plural = 'سبدهای خرید کاربران'

@@ -89,24 +89,36 @@ def user_basket(request: HttpRequest):
     current_order, created = Order.objects.prefetch_related('orderdetail_set').get_or_create(is_paid=False, user_id=request.user.id)
     total_amount = current_order.calculate_total_price()
 
-    # بررسی اطلاعات پروفایل کاربر
-    profile_form = None
-    if request.method == 'GET':
-        profile_form = EditProfileModelForm(instance=request.user)
-
     if request.method == 'POST':
         profile_form = EditProfileModelForm(request.POST, request.FILES, instance=request.user)
         if profile_form.is_valid():
             profile_form.save()
+            return redirect('user_basket_page2')  # اگر فرم معتبر بود، به مرحله بعدی هدایت شود
+
+    profile_form = EditProfileModelForm(instance=request.user)
 
     context = {
         'order': current_order,
         'sum': total_amount,
-        'profile_form': profile_form,  # اضافه کردن فرم پروفایل به متغیرهای قالب
-
+        'profile_form': profile_form,
     }
     return render(request, 'user_panel_module/user_basket.html', context)
 
+def user_basket2(request):
+    # اینجا می‌توانید لازمه برای ایجاد فرم اطلاعات فردی کاربر را انجام دهید
+    # برای مثال:
+    if request.method == 'POST':
+        profile_form = EditProfileModelForm(request.POST, request.FILES, instance=request.user)
+        if profile_form.is_valid():
+            profile_form.save()
+            return redirect('request_payment')  # فرم معتبر بود، به مرحله بعدی هدایت می‌شود
+    else:
+        profile_form = EditProfileModelForm(instance=request.user)
+        
+    context = {
+        'profile_form': profile_form,
+    }
+    return render(request, 'user_panel_module/user_basket2.html', context)
 
 @login_required
 def remove_order_detail(request):

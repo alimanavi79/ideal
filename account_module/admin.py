@@ -8,7 +8,7 @@ from .models import User
 # admin.site.register(models.User)
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'display_user_orders')  # اضافه کردن تابع display_user_orders به نمایش
+    list_display = ('username', 'email')  # اضافه کردن تابع display_user_orders به نمایش
 
     def display_user_orders(self, obj):
         return obj.display_user_orders()

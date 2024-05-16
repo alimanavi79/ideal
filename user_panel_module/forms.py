@@ -1,48 +1,39 @@
 from django import forms
 from django.core import validators
 from django.core.exceptions import ValidationError
+from iranian_cities.models import Ostan
 
 from account_module.models import User
+from iranian_cities.models import Shahrestan
 
-
+# TODO : CHANGE THIS like your new model
 class EditProfileModelForm(forms.ModelForm):
+    state = forms.ModelChoiceField(queryset=Ostan.objects.all(), label='استان', empty_label=None)
+    city = forms.ModelChoiceField(queryset=Shahrestan.objects.none(), label='شهر', empty_label=None)  # افزودن فیلد شهر
+
+
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'avatar', 'address', 'about_user']
+        fields = ['first_name', 'last_name', 'phone_number', 'state', 'city','street','postal_code']
         widgets = {
-            'first_name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'required': True,  # این فیلد اجباری است
-
-            }),
-            'last_name': forms.TextInput(attrs={
-                'class': 'form-control',
-                                'required': True,  # این فیلد اجباری است
-
-            }),
-            'avatar': forms.FileInput(attrs={
-                'class': 'form-control'
-            }),
-            'address': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 3,
-                                'required': True,  # این فیلد اجباری است
-
-            }),
-            'about_user': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 6,
-                'id': 'message'
-            })
-        }
-
+            'first_name': forms.TextInput(attrs={'class': 'form-control','required': True}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control','required': True}),
+            'phone_number': forms.NumberInput(attrs={'class': 'form-control','requried': True}),
+            'state': forms.Textarea(attrs={'class': 'form-control','rows': 1,'required': True}),
+            'city': forms.Textarea(attrs={'class': 'form-control','rows': 1,'required': True}),
+            'street': forms.Textarea(attrs={'class': 'form-control','rows': 1,'required': True}),
+            'postal_code': forms.NumberInput(attrs={'class': 'form-control','rows': 1,'id': 'message','required': True})
+            }
         labels = {
             'first_name': 'نام',
             'last_name': 'نام خانوادگی',
-            'avatar': 'تصویر پروفایل',
-            'address': 'آدرس',
-            'about_user': 'درباره شخص',
+            'phone_number': 'شماره تلفن',
+            'state': 'استان',
+            'city': 'شهر',
+            'street': 'کوچه',
+            'postal_code': 'کد پستی',
         }
+
 
 
 class ChangePasswordForm(forms.Form):

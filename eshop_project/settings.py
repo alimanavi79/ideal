@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'django_render_partial',
     'sorl.thumbnail',
     'jalali_date',
-    'widget_tweaks'
+    'widget_tweaks',
+    'iranian_cities'
 ]
 
 MIDDLEWARE = [

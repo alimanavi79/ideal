@@ -1,0 +1,73 @@
+<!-- search_results.html -->
+{% extends 'shared/_layout.html' %}
+{% load thumbnail %}
+{% load render_partial %}
+
+{% block title %}نتایج جستجو{% endblock %}
+
+{% block content %}
+<section>
+    <div class="container">
+        <div class="row">
+
+            <div class="col-sm-9 padding-right">
+                {% if object_list %}
+                <div class="features_items"><!--features_items-->
+                    <h2 class="title text-center">نتایج جستجو</h2>
+                    {% for product in object_list %}
+                    {% include 'includes/product_item_partial.html' with product=product col_size=4 %}
+                    {% endfor %}
+                    <div class="clearfix"></div>
+                </div><!--features_items-->
+                {% else %}
+                <div class="alert alert-warning">
+                    <p>هیچ محصولی یافت نشد.</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-sm-3">
+                <div class="left-sidebar">
+                    {% render_partial 'product_module.views.product_categories_component' %}
+                    {% render_partial 'product_module.views.product_brands_component' %}
+            
+            
+                    <div class="price-range"><!--price-range-->
+                        <h2>فیلتـر قیمـت</h2>
+                        <div>
+                            <form action="" method="get" id="filter_form">
+                                <input type="hidden" name="page" id="page" value="{{ page_obj.number }}">
+                                <!-- <input  name="start_price" value="{{ start_price }}"> -->
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label for="start_price">از:</label>
+                                        <input class="form-control" name="start_price" value="{{ start_price }}"
+                                            placeholder="قیمت شروع">
+                                    </div>
+                                    <!-- <input  name="end_price"  value="{{ end_price }}"> -->
+                                    <div class="col-sm-6">
+                                        <label for="end_price">تا:</label>
+                                        <input class="form-control" name="end_price" value="{{ end_price }}"
+                                            placeholder="قیمت پایان">
+                                        <br>
+                                    </div>
+                            </form>
+                            <button class="btn btn-success btn-block" onclick="filterProducts()">فیلتر</button>
+                        </div>
+                        <div class="shipping text-center"><!--shipping-->
+                            {% for banner in banners %}
+                            <a href="{{ banner.url }}">
+                                <img src="{{ banner.image.url }}" alt="">
+                            </a>
+                            {% endfor %}
+                            <br>
+                            <br>
+                        </div><!--/shipping-->
+            
+                    </div>
+                </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}

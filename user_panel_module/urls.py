@@ -11,4 +11,8 @@ urlpatterns = [
     path('my-shopping-detail/<order_id>', views.my_shopping_detail, name='user_shopping_detail_page'),
     path('remove-order-detail', views.remove_order_detail, name='remove_order_detail_ajax'),
     path('change-order-detail', views.change_order_detail_count, name='change_order_detail_count_ajax'),
+    
+    path('ajax/load-shahrestans/', views.load_shahrestans, name='ajax_load_shahrestans'),
+
+
 ]

@@ -50,25 +50,18 @@
 
                         <div class="price-range"><!--price-range-->
                             <h2>فیلتـر قیمـت</h2>
-                            <div class="well">
-                                <input
-                                        type="text"
-                                        class="span2"
-                                        value="{{ start_price }},{{ end_price }}"
-                                        data-slider-min="0"
-                                        data-slider-max="{{ db_max_price }}"
-                                        data-slider-step="1000"
-                                        data-slider-value="[{{ start_price }},{{ end_price }}]"
-                                        id="sl2">
-                                <br/>
-                                <b>{{ db_max_price }}</b> <b class="pull-left">0</b>
-                            </div>
-                        </div><!--/price-range-->
                         <div>
                             <form action="" method="get" id="filter_form">
-                                <input type="hidden" name="page" id="page" value="{{ page_obj.number }}">
-                                <input type="hidden" name="start_price" id="start_price" value="{{ start_price }}">
-                                <input type="hidden" name="end_price" id="end_price" value="{{ end_price }}">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label for="start_price">از:</label>
+                                        <input  class="form-control" name="start_price" value="{{ start_price }}" placeholder="قیمت شروع">
+                                    </div>
+                                <div class="col-sm-6">
+                                    <label for="end_price">تا:</label>
+                                    <input class="form-control" name="end_price" value="{{ end_price }}" placeholder="قیمت پایان">
+                                    <br>
+                                </div>
                             </form>
                             <button class="btn btn-success btn-block" onclick="filterProducts()">فیلتر</button>
                         </div>

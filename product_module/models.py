@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from account_module.models import User
+from django.core.exceptions import ValidationError
 
 
 # Create your models here.
@@ -38,11 +39,38 @@ class Product(models.Model):
     image = models.ImageField(upload_to='images/products', null=True, blank=True, verbose_name='تصویر محصول')
     brand = models.ForeignKey(ProductBrand, on_delete=models.CASCADE, verbose_name='برند', null=True, blank=True)
     price = models.IntegerField(verbose_name='قیمت')
+    discounted_price = models.IntegerField(verbose_name='قیمت با تخفیف', null=True, blank=True, default=None)
+    inventory = models.IntegerField(verbose_name='موجودی', default=0)
     short_description = models.CharField(max_length=360, db_index=True, null=True, verbose_name='توضیحات کوتاه')
     description = models.TextField(verbose_name='توضیحات اصلی', db_index=True)
     slug = models.SlugField(default="", null=False, db_index=True, blank=True, max_length=200, unique=True, verbose_name='عنوان در url')
     is_active = models.BooleanField(default=False, verbose_name='فعال / غیرفعال')
     is_delete = models.BooleanField(verbose_name='حذف شده / نشده')
+
+
+    def get_absolute_url(self):
+        return reverse('product-detail', args=[self.slug])
+    
+    def is_available(self, quantity=1):
+        return self.inventory >= quantity
+
+    def save(self, *args, **kwargs):
+        if self.discounted_price and self.discounted_price < self.price:
+            # If the discounted price is less than the original price, save it
+            super().save(*args, **kwargs)
+        elif self.discounted_price and self.discounted_price > self.price:
+            # If the discounted price is greater than the original price, raise a ValidationError
+            raise ValidationError("Discounted price cannot be greater than the original price.")
+        else:
+            # If there is no discounted price, save the object
+            super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.title} ({self.price})"
+
+    class Meta:
+        verbose_name = 'محصول'
+        verbose_name_plural = 'محصولات'
 
     # @classmethod
     # def custom_query(cls):
@@ -75,19 +103,7 @@ class Product(models.Model):
     #         with connection.cursor() as cursor:
     #             cursor.callproc('your_update_procedure_name', [self.id, self.title, self.category, self.image, ...])  # فراخوانی store procedure برای به‌روزرسانی اطلاعات
 
-    def get_absolute_url(self):
-        return reverse('product-detail', args=[self.slug])
 
-    def save(self, *args, **kwargs):
-        # self.slug = slugify(self.title)
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f"{self.title} ({self.price})"
-
-    class Meta:
-        verbose_name = 'محصول'
-        verbose_name_plural = 'محصولات'
 
 
 class ProductTag(models.Model):

@@ -1,0 +1,37 @@
+<!-- templates/location_form.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Location Form</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Location Form</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+
+    <script type="text/javascript">
+        $("#id_ostan").change(function () {
+            var url = "{% url 'ajax_load_shahrestans' %}";
+            var ostanId = $(this).val();
+
+            $.ajax({
+                url: url,
+                data: {
+                    'ostan': ostanId
+                },
+                success: function (data) {
+                    $("#id_shahrestan").html('');
+                    $.each(data, function (key, value) {
+                        $("#id_shahrestan").append('<option value="' + value.id + '">' + value.name + '</option>');
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

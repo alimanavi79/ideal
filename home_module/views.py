@@ -5,6 +5,8 @@ from product_module.models import Product, ProductCategory
 from site_module.models import SiteSetting, FooterLinkBox, Slider
 from utils.convertors import group_list
 
+def custom_404(request, exception):
+    return render(request, '404/404.html', status=404)
 
 class HomeView(TemplateView):
     template_name = 'home_module/index_page.html'

@@ -99,3 +99,14 @@ def product_brands_component(request: HttpRequest):
         'brands': product_brands
     }
     return render(request, 'product_module/components/product_brands_component.html', context)
+
+
+# ///////////////////////////////////////////////////
+class SearchResultsView(ListView):
+    model = Product
+    template_name = 'product_module/search_results.html'
+
+    def get_queryset(self):
+        query = self.request.GET.get('query')
+        object_list = Product.objects.filter(title__icontains=query)
+        return object_list

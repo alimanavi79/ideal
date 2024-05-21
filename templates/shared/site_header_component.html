@@ -69,10 +69,16 @@
     <div class="header-bottom"><!--header-bottom-->
         <div class="container">
             <div class="row">
-
+                <style></style>
                 <div class="col-sm-3">
-                    <div class="search_box pull-left">
-                        <input type="text" placeholder="جستـجو"/>
+                    <div class="pull-left">
+                        <form action="{% url 'search_results' %}" method="GET" class="search-form">
+                            <input type="text" name="query" placeholder="جستـجو" class="search-input"
+                                style="font-family: inherit; font-size: inherit; padding: 6px; border-radius: 3px; border: 1px solid #ccc;" />
+                            <button type="submit" class="search-button"
+                                style="font-size: inherit; padding: 6px; border-radius: 3px; border: 1px solid #ccc;"><i
+                                    class="fa fa-search"></i></button>
+                        </form>
                     </div>
                 </div>
 

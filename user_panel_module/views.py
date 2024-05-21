@@ -10,6 +10,11 @@ from order_module.models import Order, OrderDetail
 from .forms import EditProfileModelForm, ChangePasswordForm
 from django.contrib.auth import logout
 from django.utils.decorators import method_decorator
+from django.shortcuts import render
+from django.shortcuts import render
+from django.http import JsonResponse
+from iranian_cities.models import Shahrestan
+
 
 
 @method_decorator(login_required, name='dispatch')
@@ -26,6 +31,7 @@ class EditUserProfilePage(View):
             'form': edit_form,
             'current_user': current_user
         }
+    
         return render(request, 'user_panel_module/edit_profile_page.html', context)
 
     def post(self, request: HttpRequest):
@@ -120,6 +126,12 @@ def user_basket2(request):
     }
     return render(request, 'user_panel_module/user_basket2.html', context)
 
+def load_shahrestans(request):
+    ostan_id = request.GET.get('ostan')
+    shahrestans = Shahrestan.objects.filter(ostan_id=ostan_id).order_by('name')
+    return JsonResponse(list(shahrestans.values('id', 'name')), safe=False)
+
+
 @login_required
 def remove_order_detail(request):
     detail_id = request.GET.get('detail_id')
@@ -199,3 +211,10 @@ def my_shopping_detail(request: HttpRequest, order_id):
     return render(request, 'user_panel_module/user_shopping_detail.html', {
         'order': order
     })
+
+
+
+#//////////////////////////////////////
+
+# views.py
+

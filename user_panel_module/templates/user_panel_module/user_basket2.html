@@ -3,6 +3,31 @@
 {% block title %}
     سبد خرید
 {% endblock %}
+{% block header_references %}
+<meta charset="UTF-8">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    .full-height {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - 100px); /* Adjusts height to create space from footer */
+        margin-bottom: 50px; /* Space from the footer */
+    }
+    .form-container {
+        width: 100%;
+        max-width: 500px;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        border-radius: 8px;
+    }
+    .btn-block {
+        display: block;
+        width: 100%;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <section id="cart_items">
@@ -10,16 +35,40 @@
         <div class="breadcrumbs">
             <ol class="breadcrumb">
                 <li><a href="#">خانـه</a></li>
-                <li >پرداخت</li>
-                <li class="active">آدرس</li>
+                <li><a href="#">آدرس</a></li>
+                <li class="active">پرداخت</li>
             </ol>
         </div><!--/breadcrums-->                
     </div>
 </section>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ profile_form.as_p }}
-        <button type="submit" class="btn btn-primary">ثبت</button>
-    </form>
-    
+
+<div class="container full-height">
+    <div class="form-container">
+        <form method="post">
+            {% csrf_token %}
+            {{ profile_form.as_p }}
+            <button type="submit" class="btn btn-primary btn-block">پرداخت</button>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("#id_ostan").change(function () {
+        var url = "{% url 'ajax_load_shahrestans' %}";
+        var ostanId = $(this).val();
+
+        $.ajax({
+            url: url,
+            data: {
+                'ostan': ostanId
+            },
+            success: function (data) {
+                $("#id_shahrestan").html('');
+                $.each(data, function (key, value) {
+                    $("#id_shahrestan").append('<option value="' + value.id + '">' + value.name + '</option>');
+                });
+            }
+        });
+    });
+</script>
 {% endblock %}

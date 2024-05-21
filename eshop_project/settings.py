@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-9qts1=s)$ky8o%%_$_#j#dmb106oas2_-n6shcfp$yg2g@uxny
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 # Application definition
 
@@ -178,3 +178,6 @@ JALALI_DATE_DEFAULTS = {
         }
     },
 }
+ 
+
+ 

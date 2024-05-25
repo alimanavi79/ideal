@@ -8,6 +8,13 @@
             <div class="row">
                 <div class="col-sm-6 col-md-offset-3">
                     <div class="signup-form"><!--sign up form-->
+                        {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                            <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                                {% endfor %}
+                        </ul>
+                        {% endif %}
                         <h2>ورود به حساب کاربری</h2>
                         <form method="post" action="{% url 'login_page' %}">
                             {% csrf_token %}

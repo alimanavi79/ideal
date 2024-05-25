@@ -6,6 +6,7 @@ from django.utils.crypto import get_random_string
 from django.http import Http404, HttpRequest
 from django.contrib.auth import login, logout
 from utils.email_service import send_email
+from django.contrib import messages
 
 from account_module.forms import RegisterForm, LoginForm, ForgotPasswordForm, ResetPasswordForm
 
@@ -31,12 +32,15 @@ class RegisterView(View):
                 new_user = User(
                     email=user_email,
                     email_active_code=get_random_string(72),
-                    is_active=True,
+                    is_active=False,
                     username=user_email)
                 new_user.set_password(user_password)
                 new_user.save()
+                email = 'alirezaa4085@gmail.com'
+                recipient_list = [email] 
                 send_email('فعالسازی حساب کاربری', new_user.email, {'user': new_user}, 'emails/activate_account.html')
-                return redirect(reverse('login_page'))
+
+                return redirect(reverse('registerdetails_page'))
 
         context = {
             'register_form': register_form
@@ -44,6 +48,9 @@ class RegisterView(View):
 
         return render(request, 'account_module/register.html', context)
 
+class RegisterdetailsView(View):
+    def get(self, request):
+        return render(request, 'account_module/registerdetails.html')
 
 class ActivateAccountView(View):
     def get(self, request, email_active_code):
@@ -53,12 +60,11 @@ class ActivateAccountView(View):
                 user.is_active = True
                 user.email_active_code = get_random_string(72)
                 user.save()
-                # todo: show success message to user
+                messages.success(request, 'حساب کاربری شما با موفقیت فعال شد.')
                 return redirect(reverse('login_page'))
             else:
-                # todo: show your account was activated message to user
+                messages.info(request, 'حساب کاربری شما قبلاً فعال شده است.')
                 pass
-
         raise Http404
 
 

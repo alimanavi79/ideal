@@ -66,3 +66,6 @@ class AboutView(TemplateView):
         site_setting: SiteSetting = SiteSetting.objects.filter(is_main_setting=True).first()
         context['site_setting'] = site_setting
         return context
+
+# //////////////////////////////////////////////////////////
+

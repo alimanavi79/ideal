@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-9qts1=s)$ky8o%%_$_#j#dmb106oas2_-n6shcfp$yg2g@uxny
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1','localhost']
 
 # Application definition
 
@@ -150,8 +150,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'onionarchitecturemvc@gmail.com'
-EMAIL_HOST_PASSWORD = 'djangotoplearn@pass'
+EMAIL_HOST_USER = 'ali.manavi80@gmail.com'
+EMAIL_HOST_PASSWORD = 'gadp solx kuak btjz'
 EMAIL_PORT = 587
 
 # default settings
@@ -180,4 +180,3 @@ JALALI_DATE_DEFAULTS = {
 }
  
 
- 

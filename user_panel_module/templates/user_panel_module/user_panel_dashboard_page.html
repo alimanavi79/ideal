@@ -2,18 +2,71 @@
 {% load render_partial %}
 
 {% block title %}
-    داشبورد
+داشبورد
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                {% render_partial 'user_panel_module.views.user_panel_menu_component' %}
-            </div>
-            <div class="col-md-8">
-                <p>this is user dashboard</p>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            {% render_partial 'user_panel_module.views.user_panel_menu_component' %}
+        </div>
+        <div class="test">
+            <div class="">
+                <div class="">
+                    <div class="">
+                        <div class="">
+                            <p class=""><span class="relative">سفارش‌های من</span></p>
+                        </div>
+                        <div class=""></div>
+                    </div><span data-cro-id="profile-all-orders"><a
+                            class=""
+                            href="/profile/orders/"><span>مشاهده همه</span>
+                            <div class="flex"><svg
+                                    style="width: 18px; height: 18px; fill: var(--color-icon-secondary);">
+                                    <use xlink:href="#chevronLeft"></use>
+                                </svg></div>
+                        </a></span>
+                </div>
+                <div class=""><a
+                        class=""
+                        data-cro-id="profile-orders-inprogress" href="/profile/orders/?activeTab=in_progress">
+                        <div class="">
+                            <div style="width: 64px; height: 64px; line-height: 0;"><img class="w-full inline-block"
+                                    src="\static\images\svg\status-processing.svg" width="64" height="64" alt="icon"
+                                    title="" style="object-fit: contain;"></div>
+                        </div>
+                        <div class="">
+                            <div class="">۰ سفارش</div><span
+                                class="">جاری</span>
+                        </div>
+                    </a><a
+                        class=""
+                        data-cro-id="profile-orders-sent" href="/profile/orders/?activeTab=sent">
+                        <div class="">
+                            <div style="width: 64px; height: 64px; line-height: 0;"><img class="w-full inline-block"
+                                    src="/static/images/svg/status-delivered.svg" width="64" height="64" alt="icon"
+                                    title="" style="object-fit: contain;"></div>
+                        </div>
+                        <div class="">
+                            <div class="">۱۶ سفارش</div><span
+                                class="">تحویل شده</span>
+                        </div>
+                    </a><a
+                        class=""
+                        data-cro-id="profile-orders-returned" href="/profile/orders/?activeTab=returned">
+                        <div class="relative">
+                            <div style="width: 64px; height: 64px; line-height: 0;"><img class="w-full inline-block"
+                                    src="/static/images/svg/status-returned.svg" width="64" height="64" alt="icon"
+                                    title="" style="object-fit: contain;"></div>
+                        </div>
+                        <div class="">
+                            <div class="">۱ سفارش</div><span
+                                class="">مرجوع شده</span>
+                        </div>
+                    </a></div>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}

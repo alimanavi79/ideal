@@ -77,11 +77,27 @@ class ChangePasswordPage(View):
 class MyShopping(ListView):
     model = Order
     template_name = 'user_panel_module/user_shopping.html'
+    context_object_name = 'orders'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['active_tab'] = self.request.GET.get('activeTab', 'all')
+        return context
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        request: HttpRequest = self.request
-        queryset = queryset.filter(user_id=request.user.id, is_paid=True)
+        active_tab = self.request.GET.get('activeTab')
+        if active_tab == 'processing':
+            queryset = Order.objects.filter(user=self.request.user, is_paid=False, status='processing')
+        elif active_tab == 'sent':
+            queryset = Order.objects.filter(user=self.request.user, is_paid=True, status='shipped')
+        elif active_tab == 'delivered':
+            queryset = Order.objects.filter(user=self.request.user, is_paid=True, status='delivered')
+        elif active_tab == 'cancelled':
+            queryset = Order.objects.filter(user=self.request.user, is_paid=True, status='cancelled')
+        elif active_tab == 'returned':
+            queryset = Order.objects.filter(user=self.request.user, is_paid=True, status='returned')
+        else:
+            queryset = Order.objects.filter(user=self.request.user)
         return queryset
 
 

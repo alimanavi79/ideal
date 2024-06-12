@@ -3,41 +3,76 @@
 {% load poll_extras %}
 
 {% block title %}
-    لیست خرید های من
+لیست خرید های من
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                {% render_partial 'user_panel_module.views.user_panel_menu_component' %}
-            </div>
-            <div class="col-md-8">
-                <table class="table table-responsive table-hover table-striped">
+<style>
+.active-tab {
+    background-color: #f0f0f0; /* رنگ پس زمینه تب فعال */
+    font-weight: bold; /* تغییر وزن متن تب فعال */
+}
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            {% render_partial 'user_panel_module.views.user_panel_menu_component' %}
+        </div>
+        <div class="col-md-8">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+        <a class="nav-link {% if active_tab == 'all' %}active-tab{% endif %}" href="?activeTab=all">همه</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if active_tab == 'processing' %}active-tab{% endif %}"
+                        href="?activeTab=processing">در حال پردازش</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if active_tab == 'sent' %}active-tab{% endif %}" href="?activeTab=sent">ارسال
+                        شده</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if active_tab == 'delivered' %}active-tab{% endif %}"
+                        href="?activeTab=delivered">تحویل داده شده</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_tab == 'cancelled' %}active-tab{% endif %}"
+                        href="?activeTab=cancelled">لغو شده</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_tab == 'returned' %}active-tab{% endif %}"
+                            href="?activeTab=returned">مرجوع شده</a>
+                    </li>
+            </ul>
+            <table class="table table-responsive table-hover table-striped">
+                <thead>
                     <tr>
                         <th class="text-right">شناسه</th>
                         <th class="text-right">تاریخ تایید فاکتور</th>
                         <th class="text-right">قیمت نهایی خرید</th>
                         <th class="text-right">دستورات</th>
                     </tr>
-                    {% for order in object_list %}
-                        <tr>
-                            <td class="text-right">{{ order.id }}</td>
-                            <td class="text-right">
-                                {{ order.payment_date | show_jalali_date }}
-                            </td>
-                            <td class="text-right">
-                                {{ order.calculate_total_price|three_digits_currency }}
-                            </td>
-                            <td>
-                                <a href="{% url 'user_shopping_detail_page' order_id=order.id %}"
-                                   class="btn btn-success">جزییات</a>
-                            </td>
-                        </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td class="text-right">{{ order.id }}</td>
+                        <td class="text-right">
+                            {{ order.payment_date | show_jalali_date }}
+                        </td>
+                        <td class="text-right">
+                            {{ order.calculate_total_price|three_digits_currency }}
+                        </td>
+                        <td>
+                            <a href="{% url 'user_shopping_detail_page' order_id=order.id %}"
+                                class="btn btn-success">جزییات</a>
+                        </td>
+                    </tr>
                     {% endfor %}
-
-                </table>
-            </div>
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
+
 {% endblock %}

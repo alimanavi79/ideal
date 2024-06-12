@@ -5247,6 +5247,7 @@ a.thumbnail.active {
 .list-group {
   padding-left: 0;
   margin-bottom: 20px;
+  margin-top: 16px;
 }
 .list-group-item {
   position: relative;

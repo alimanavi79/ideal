@@ -6,67 +6,137 @@
 {% endblock %}
 
 {% block content %}
+<style>
+    .order-container {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        gap: 16px;
+        /* فاصله بین آیتم‌ها */
+    }
+
+    .order-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        text-decoration: none;
+        /* حذف خط زیر لینک‌ها */
+        color: inherit;
+        /* حفظ رنگ متن اصلی */
+    }
+
+    .icon-container {
+        width: 64px;
+        height: 64px;
+    }
+
+    .icon {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .order-details {
+        margin-top: 8px;
+        /* فاصله بین آیکون و متن */
+    }
+
+    .order-count {
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+
+    .order-status {
+        font-size: 0.9em;
+        color: gray;
+        /* رنگ متن وضعیت */
+    }
+
+    .box {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 16px;
+        background-color: #f9f9f9;
+        margin-top: 16px;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .header .title {
+        margin: 0;
+        font-size: 1.5em;
+    }
+
+    .header .view-all {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: inherit;
+        font-size: 1em;
+    }
+</style>
+
 <div class="container">
     <div class="row">
         <div class="col-md-4">
             {% render_partial 'user_panel_module.views.user_panel_menu_component' %}
         </div>
-        <div class="test">
-            <div class="">
-                <div class="">
-                    <div class="">
-                        <div class="">
-                            <p class=""><span class="relative">سفارش‌های من</span></p>
+        <div class="col-md-8">
+            <div class="box">
+                <div class="header">
+                    <p class="title">سفارش‌های من</p>
+                    <a class="view-all" href="{% url 'user_shopping_page' %}">
+                        <span style="color: blue;">مشاهده همه</span>
+                        <div class="flex">
+                            <svg style="width: 18px; height: 18px; fill: var(--color-icon-secondary);">
+                                <use xlink:href="#chevronLeft"></use>
+                            </svg>
                         </div>
-                        <div class=""></div>
-                    </div><span data-cro-id="profile-all-orders"><a
-                            class=""
-                            href="/profile/orders/"><span>مشاهده همه</span>
-                            <div class="flex"><svg
-                                    style="width: 18px; height: 18px; fill: var(--color-icon-secondary);">
-                                    <use xlink:href="#chevronLeft"></use>
-                                </svg></div>
-                        </a></span>
+                    </a>
                 </div>
-                <div class=""><a
-                        class=""
-                        data-cro-id="profile-orders-inprogress" href="/profile/orders/?activeTab=in_progress">
-                        <div class="">
-                            <div style="width: 64px; height: 64px; line-height: 0;"><img class="w-full inline-block"
-                                    src="\static\images\svg\status-processing.svg" width="64" height="64" alt="icon"
-                                    title="" style="object-fit: contain;"></div>
-                        </div>
-                        <div class="">
-                            <div class="">۰ سفارش</div><span
-                                class="">جاری</span>
-                        </div>
-                    </a><a
-                        class=""
-                        data-cro-id="profile-orders-sent" href="/profile/orders/?activeTab=sent">
-                        <div class="">
-                            <div style="width: 64px; height: 64px; line-height: 0;"><img class="w-full inline-block"
-                                    src="/static/images/svg/status-delivered.svg" width="64" height="64" alt="icon"
-                                    title="" style="object-fit: contain;"></div>
-                        </div>
-                        <div class="">
-                            <div class="">۱۶ سفارش</div><span
-                                class="">تحویل شده</span>
-                        </div>
-                    </a><a
-                        class=""
-                        data-cro-id="profile-orders-returned" href="/profile/orders/?activeTab=returned">
-                        <div class="relative">
-                            <div style="width: 64px; height: 64px; line-height: 0;"><img class="w-full inline-block"
-                                    src="/static/images/svg/status-returned.svg" width="64" height="64" alt="icon"
-                                    title="" style="object-fit: contain;"></div>
-                        </div>
-                        <div class="">
-                            <div class="">۱ سفارش</div><span
-                                class="">مرجوع شده</span>
-                        </div>
-                    </a></div>
+                <div class="test">
+                    <div class="order-container">
+                        <a class="order-item" data-cro-id="profile-orders-inprogress"
+                            href="{% url 'user_shopping_page' %}?activeTab=processing">
+                            <div class="icon-container">
+                                <img class="icon" src="/static/images/svg/status-processing.svg" alt="icon">
+                            </div>
+                            <div class="order-details">
+                                <div class="order-count">{{ in_progress_orders }} سفارش</div>
+                                <span class="order-status">جاری</span>
+                            </div>
+                        </a>
+                        <a class="order-item" data-cro-id="profile-orders-sent"
+                            href="{% url 'user_shopping_page' %}?activeTab=sent">
+                            <div class="icon-container">
+                                <img class="icon" src="/static/images/svg/status-delivered.svg" alt="icon">
+                            </div>
+                            <div class="order-details">
+                                <div class="order-count">{{ delivered_orders }} سفارش</div>
+                                <span class="order-status">ارسال شده</span>
+                            </div>
+                        </a>
+                        <a class="order-item" data-cro-id="profile-orders-returned"
+                            href="{% url 'user_shopping_page' %}?activeTab=returned">
+                            <div class="icon-container">
+                                <img class="icon" src="/static/images/svg/status-returned.svg" alt="icon">
+                            </div>
+                            <div class="order-details">
+                                <div class="order-count">{{ returned_orders }} سفارش</div>
+                                <span class="order-status">مرجوع شده</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+    <br>
 </div>
 {% endblock %}

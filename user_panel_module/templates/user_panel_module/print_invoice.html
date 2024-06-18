@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fa">
+
+<head>
+    <meta charset="UTF-8">
+    <title>فاکتور خرید</title>
+    <style>
+        /* استایل‌های مخصوص برای چاپ */
+        @page {
+            size: auto;
+            margin: 10mm;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            background-color: #fff;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .invoice-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .invoice-header h2 {
+            font-size: 28px;
+            color: #333;
+        }
+
+        .invoice-header p {
+            font-size: 16px;
+            color: #777;
+            margin-top: 10px;
+        }
+
+        .invoice-details {
+            margin-bottom: 20px;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #ccc;
+            margin-top: 30px;
+        }
+
+        .invoice-table th,
+        .invoice-table td {
+            border: 1px solid #ccc;
+            padding: 12px;
+            text-align: right;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .invoice-table th {
+            background-color: #f0f0f0;
+        }
+
+        .invoice-table td:first-child {
+            width: 10%;
+        }
+
+        .invoice-table td:nth-child(2) {
+            width: 40%;
+        }
+
+        .invoice-table td:nth-child(3),
+        .invoice-table td:nth-child(4),
+        .invoice-table td:nth-child(5) {
+            width: 16.67%;
+        }
+
+        .invoice-table td:last-child {
+            font-weight: bold;
+            color: #f00;
+        }
+
+        .invoice-total {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .invoice-total span {
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 14px;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="invoice-header">
+            <h2>فاکتور خرید شما</h2>
+            <p>تاریخ: {{ order.created_at|date:'d F Y' }}</p>
+        </div>
+        <div class="invoice-details">
+            <h3>وضعیت سفارش: {{ order.get_status_display }}</h3>
+            {% if order.tracking_code %}
+            <p>کد رهگیری: {{ order.tracking_code }}</p>
+            {% endif %}
+        </div>
+        <table class="invoice-table">
+            <thead>
+                <tr>
+                    <th>شناسه</th>
+                    <th>محصول</th>
+                    <th>قیمت واحد</th>
+                    <th>تعداد</th>
+                    <th>قیمت کل</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detail in order.orderdetail_set.all %}
+                <tr>
+                    <td>{{ detail.id }}</td>
+                    <td>{{ detail.product.title }}</td>
+                    <td>{{ detail.product.price }}</td>
+                    <td>{{ detail.count }}</td>
+                    <td>{{ detail.final_price }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4" style="text-align: center;"><span>جمع کل:</span></td>
+                    <td>{{ order.calculate_total_price }}</td>
+                </tr>
+            </tfoot>
+        </table>
+        <div class="invoice-total">
+            <span>جمع کل: {{ order.calculate_total_price }}</span>
+        </div>
+        <div class="footer">
+            <p>با تشکر از خرید شما. برای اطلاعات بیشتر با ما تماس بگیرید.</p>
+        </div>
+    </div>
+</body>
+
+</html>

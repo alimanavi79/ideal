@@ -3,6 +3,7 @@ from account_module.models import User
 from product_module.models import Product
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.template.loader import render_to_string
 
 from django.utils import timezone
 

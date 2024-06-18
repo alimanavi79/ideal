@@ -75,6 +75,7 @@ class ProductDetailView(DetailView):
             new_visit.save()
 
         return context
+    
 
 
 class AddProductFavorite(View):

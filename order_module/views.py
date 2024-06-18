@@ -92,6 +92,16 @@ def request_payment(request: HttpRequest):
     total_price = current_order.calculate_total_price()
     if total_price == 0:
         return redirect(reverse('user_basket_page'))
+    
+    for detail in current_order.orderdetail_set.all():
+        if detail.product.inventory < detail.count:
+            return JsonResponse({
+                'status': 'insufficient_inventory',
+                'text': f'موجودی محصول {detail.product.title} کافی نیست',
+                'confirm_button_text': 'باشه',
+                'icon': 'error'
+            })
+        
     print(total_price)
     req_data = {
         "merchant_id": MERCHANT,
@@ -143,9 +153,19 @@ def verify_payment(request: HttpRequest):
         # if bodyResponse != 100:
         #     return HttpResponse('Error occurd')
         if bodyResponse ==100:
+            for detail in current_order.orderdetail_set.all():
+                product = detail.product
+                if product.inventory >= detail.count:
+                    product.inventory -= detail.count
+                    product.save()
+                else:
+                    return render(request, 'order_module/payment_result.html', {
+                        'error': f'موجودی محصول {product.title} کافی نیست و پرداخت انجام نشد'
+                    })
             current_order.is_paid = True
             current_order.payment_date = timezone.now()
             current_order.save()
+
             return render(request, 'order_module/payment_result.html', {
                 'success': f'تراکنش شما با کد پیگیری {ref_str} با موفقیت انجام شد'
             })

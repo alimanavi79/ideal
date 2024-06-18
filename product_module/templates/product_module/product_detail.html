@@ -80,16 +80,26 @@
                                         <label>تعداد :</label>
 										<input type="number" min="1" value="1"
                                                class="search_box" id="product-count">
-										<button onclick="addProductToOrder({{ product.id }})"
-                                                class="btn btn-fefault cart">
-											<i class="fa fa-shopping-cart"></i>
-											افزودن به سبد خرید
-										</button>
+                                        {% if product.inventory > 0 %}
+                                        <button onclick="addProductToOrder({{ product.id }})" class="btn btn-fefault cart">
+                                            <i class="fa fa-shopping-cart"></i>
+                                            افزودن به سبد خرید
+                                        </button>
+                                        {% else %}
+                                        <button class="btn btn-fefault cart" disabled>
+                                            <i class="fa fa-shopping-cart"></i>
+                                            ناموجود
+                                        </button>
+                                        {% endif %}
 									</span>
                                 </div>
                                 <div>
+                                    {% if product.inventory > 0 %}
                                     <p><b>موجـودی :</b> در انبـار موجود می باشد</p>
-
+                                    {% else %}
+                                    <p><b>موجـودی :</b> در انبـار موجود نمی باشد</p>
+                                    {% endif %}
+                                    
                                     {% if product.brand %}
                                         <p><b>برنـد :</b> {{ product.brand.title }} </p>
                                     {% endif %}

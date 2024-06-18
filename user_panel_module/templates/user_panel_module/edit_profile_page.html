@@ -25,4 +25,26 @@
             </div>
         </div>
     </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+    $("#id_ostan").change(function () {
+        var url = "{% url 'ajax_load_shahrestans' %}";
+        var ostanId = $(this).val();
+
+        $.ajax({
+            url: url,
+            data: {
+                'ostan': ostanId
+            },
+            success: function (data) {
+                $("#id_shahrestan").html('');
+                $.each(data, function (key, value) {
+                    $("#id_shahrestan").append('<option value="' + value.id + '">' + value.name + '</option>');
+                });
+            }
+        });
+    });
+</script>
 {% endblock %}

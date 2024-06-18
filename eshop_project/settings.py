@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django_render_partial',
     'sorl.thumbnail',
     'jalali_date',
+    'django_jalali',
     'widget_tweaks',
     'iranian_cities'
 ]
@@ -120,7 +121,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'fa-IR'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tehran'
 
 USE_I18N = True
 
@@ -178,5 +179,4 @@ JALALI_DATE_DEFAULTS = {
         }
     },
 }
- 
 

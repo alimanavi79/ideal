@@ -10,9 +10,6 @@ from order_module.models import Order, OrderDetail
 from .forms import EditProfileModelForm, ChangePasswordForm
 from django.contrib.auth import logout
 from django.utils.decorators import method_decorator
-from django.shortcuts import render
-from django.shortcuts import render
-from django.http import JsonResponse
 from iranian_cities.models import Shahrestan
 
 
@@ -87,7 +84,7 @@ class MyShopping(ListView):
     def get_queryset(self):
         active_tab = self.request.GET.get('activeTab')
         if active_tab == 'processing':
-            queryset = Order.objects.filter(user=self.request.user, is_paid=False, status='processing')
+            queryset = Order.objects.filter(user=self.request.user, is_paid=True, status='processing')
         elif active_tab == 'sent':
             queryset = Order.objects.filter(user=self.request.user, is_paid=True, status='shipped')
         elif active_tab == 'delivered':
@@ -97,7 +94,7 @@ class MyShopping(ListView):
         elif active_tab == 'returned':
             queryset = Order.objects.filter(user=self.request.user, is_paid=True, status='returned')
         else:
-            queryset = Order.objects.filter(user=self.request.user)
+            queryset = Order.objects.filter(user=self.request.user, is_paid=True)
         return queryset
 
 
@@ -229,8 +226,13 @@ def my_shopping_detail(request: HttpRequest, order_id):
     })
 
 
+# ///////////////////////////////////////////////
+from django.shortcuts import render, get_object_or_404
 
-#//////////////////////////////////////
 
-# views.py
+def print_invoice(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
 
+    return render(request, 'user_panel_module/print_invoice.html', {
+        'order': order
+    })

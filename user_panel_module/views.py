@@ -14,6 +14,7 @@ from iranian_cities.models import Shahrestan
 from product_module.models import DiscountCode
 from product_module.forms import DiscountCodeForm
 from django.contrib import messages
+from django.db.models import Q
 
 
 @method_decorator(login_required, name='dispatch')
@@ -80,23 +81,21 @@ class MyShopping(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['active_tab'] = self.request.GET.get('activeTab', 'all')
+        context['active_tab'] = self.request.GET.get('activeTab', 'in_progress')
         return context
 
     def get_queryset(self):
         active_tab = self.request.GET.get('activeTab')
-        if active_tab == 'processing':
-            queryset = Order.objects.filter(user=self.request.user, is_paid=True, status='processing')
-        elif active_tab == 'sent':
-            queryset = Order.objects.filter(user=self.request.user, is_paid=True, status='shipped')
-        elif active_tab == 'delivered':
+        if   active_tab == 'in_progress':
+            queryset = Order.objects.filter(user=self.request.user, is_paid=True).filter(Q(status='shipped') | Q(status='processing')).order_by('-id')
+        elif active_tab ==        'sent':
             queryset = Order.objects.filter(user=self.request.user, is_paid=True, status='delivered')
-        elif active_tab == 'cancelled':
-            queryset = Order.objects.filter(user=self.request.user, is_paid=True, status='cancelled')
-        elif active_tab == 'returned':
+        elif active_tab ==    'returned':
             queryset = Order.objects.filter(user=self.request.user, is_paid=True, status='returned')
+        elif active_tab ==   'cancelled':
+            queryset = Order.objects.filter(user=self.request.user, is_paid=True, status='cancelled')
         else:
-            queryset = Order.objects.filter(user=self.request.user, is_paid=True)
+            queryset = Order.objects.filter(user=self.request.user, is_paid=True).filter(Q(status='shipped') | Q(status='processing'))
         return queryset
 
 

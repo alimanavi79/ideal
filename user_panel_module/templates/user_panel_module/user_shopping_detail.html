@@ -19,22 +19,54 @@
             <p>کد رهگیری: {{ order.tracking_code }}</p>
             {% endif %}
             <table class="table table-responsive table-hover table-striped">
-                <tr>
-                    <th class="text-right">شناسه</th>
-                    <th class="text-right">محصول</th>
-                    <th class="text-right">تعداد</th>
-                    <th class="text-right">قیمت نهایی خرید</th>
-                </tr>
-                {% for detail in order.orderdetail_set.all %}
-                <tr>
-                    <td class="text-right">{{ detail.id }}</td>
-                    <td class="text-right">{{ detail.product.title }}</td>
-                    <td class="text-right">{{ detail.count }}</td>
-                    <td class="text-right">{{ detail.final_price|three_digits_currency }}</td>
-                </tr>
-                {% endfor %}
+                <thead>
+                    <tr>
+                        <th>شناسه</th>
+                        <th>محصول</th>
+                        <th>قیمت واحد</th>
+                        <th>قیمت با تخفیف</th>
+                        <th>تعداد</th>
+                        <th>قیمت کل</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for detail in order.orderdetail_set.all %}
+                    <tr>
+                        <td>{{ detail.id }}</td>
+                        <td>{{ detail.product.title }}</td>
+                        <td>{{ detail.product.price }}</td>
+                        <td>
+                            {% if detail.product.discounted_price %}
+                            {{ detail.product.discounted_price }}
+                            {% else %}
+                            {{ detail.product.price }}
+                            {% endif %}
+                        </td>
+                        <td>{{ detail.count }}</td>
+                        <td>{{ detail.final_price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="5" style="text-align: center;"><span>جمع کل:</span></td>
+                        <td>{{ order.calculate_total_price_without_discount }}</td>
+                    </tr>
+                    {% if order.discount_code %}
+                    <tr>
+                        <td colspan="5" style="text-align: center;"><span>مقدار تخفیف:</span></td>
+                        <td>{{ order.discount_code.discount_percentage }}%</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" style="text-align: center;"><span>قیمت کل پس از تخفیف:</span></td>
+                        <td>{{ order.calculate_total_price }}</td>
+                    </tr>
+                    {% endif %}
+                </tfoot>
             </table>
-    <button onclick="openPrintPage()" class="btn btn-primary">چاپ فاکتور</button>
+            {% if order.status == 'delivered' %}
+            <button onclick="openPrintPage()" class="btn btn-primary">چاپ فاکتور</button>
+            {% endif %}
         </div>
     </div>
 </div>

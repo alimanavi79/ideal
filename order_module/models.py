@@ -43,6 +43,10 @@ class Order(models.Model):
     def calculate_total_quantity(self):
         total_quantity = sum([detail.count for detail in self.orderdetail_set.all()])
         return total_quantity
+    
+    def get_status_display_farsi(self):
+        return dict(self.STATUS_CHOICES).get(self.status)
+
                 
     class Meta:
         verbose_name = 'سبد خرید'

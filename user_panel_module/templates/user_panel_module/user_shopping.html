@@ -8,10 +8,12 @@
 
 {% block content %}
 <style>
-.active-tab {
-    background-color: #f0f0f0; /* رنگ پس زمینه تب فعال */
-    font-weight: bold; /* تغییر وزن متن تب فعال */
-}
+    .active-tab {
+        background-color: #f0f0f0;
+        /* رنگ پس زمینه تب فعال */
+        font-weight: bold;
+        /* تغییر وزن متن تب فعال */
+    }
 </style>
 <div class="container">
     <div class="row">
@@ -21,28 +23,19 @@
         <div class="col-md-8">
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-        <a class="nav-link {% if active_tab == 'all' %}active-tab{% endif %}" href="?activeTab=all">همه</a>
+                    <a class="nav-link {% if active_tab == 'in_progress' %}active-tab{% endif %}" href="?activeTab=in_progress">جاری</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if active_tab == 'processing' %}active-tab{% endif %}"
-                        href="?activeTab=processing">در حال پردازش</a>
+                    <a class="nav-link {% if active_tab == 'sent' %}active-tab{% endif %}" href="?activeTab=sent">تحویل داده شده</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if active_tab == 'sent' %}active-tab{% endif %}" href="?activeTab=sent">ارسال
-                        شده</a>
+                    <a class="nav-link {% if active_tab == 'returned' %}active-tab{% endif %}"
+                    href="?activeTab=returned">مرجوع شده</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if active_tab == 'delivered' %}active-tab{% endif %}"
-                        href="?activeTab=delivered">تحویل داده شده</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if active_tab == 'cancelled' %}active-tab{% endif %}"
+                    <a class="nav-link {% if active_tab == 'cancelled' %}active-tab{% endif %}"
                         href="?activeTab=cancelled">لغو شده</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if active_tab == 'returned' %}active-tab{% endif %}"
-                            href="?activeTab=returned">مرجوع شده</a>
-                    </li>
+                </li>
             </ul>
             <table class="table table-responsive table-hover table-striped">
                 <thead>
@@ -50,6 +43,7 @@
                         <th class="text-right">شناسه</th>
                         <th class="text-right">تاریخ تایید فاکتور</th>
                         <th class="text-right">قیمت نهایی خرید</th>
+                        {% if active_tab == 'in_progress' %}<th class="text-right">وضعیت</th>{% endif %}
                         <th class="text-right">دستورات</th>
                     </tr>
                 </thead>
@@ -63,11 +57,15 @@
                         <td class="text-right">
                             {{ order.calculate_total_price|three_digits_currency }}
                         </td>
+                        {% if active_tab == 'in_progress' %}
+                        <td class="text-right">
+                            {{ order.get_status_display_farsi }}
+                        </td>
+                        {% endif %}
                         <td>
                             <a href="{% url 'user_shopping_detail_page' order_id=order.id %}"
                                 class="btn btn-success">جزییات</a>
                         </td>
-
                     </tr>
                     {% endfor %}
                 </tbody>

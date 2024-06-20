@@ -156,7 +156,8 @@
             <h3>مشخصات گیرنده:</h3>
             <p>نام: {{ order.user.get_full_name }}</p>
             <p>تلفن: {{ order.user.phone_number }}</p>
-            <p>آدرس: {{ order.user.street }}, {{ order.user.shahrestan }}, {{ order.user.ostan }}, {{order.user.postal_code }}</p>
+            <p>آدرس: {{ order.user.street }}, {{ order.user.shahrestan }}, {{ order.user.ostan }},
+                {{order.user.postal_code }}</p>
         </div>
         <div class="invoice-details">
             <h3>مشخصات فرستنده:</h3>
@@ -189,7 +190,7 @@
                         {% endif %}
                     </td>
                     <td>{{ detail.count }}</td>
-                    <td>{{ detail.final_price }}</td>
+                    <td>{{ detail.get_total_price }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

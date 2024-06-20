@@ -2,6 +2,8 @@ from django.contrib import admin
 from .models import Order, OrderDetail,User
 from django.http import HttpResponse
 from openpyxl import Workbook
+from openpyxl.styles import Alignment
+from rangefilter.filters import DateRangeQuickSelectListFilterBuilder
 
 
 class OrderDetailInline(admin.TabularInline):
@@ -10,10 +12,12 @@ class OrderDetailInline(admin.TabularInline):
     fields = ['product', 'count', 'final_price']
     readonly_fields = ['final_price']
 
+
+
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['user','id','user_address', 'is_paid', 'payment_date', 'status', 'created_at', 'calculate_total_price', 'calculate_total_quantity']
-    list_filter = ['is_paid', 'payment_date', 'status', 'created_at']
+    list_filter = ['is_paid', ("payment_date", DateRangeQuickSelectListFilterBuilder()), 'status', 'created_at']
     search_fields = ['user__username', 'user__email']
     list_editable = ['status']
     inlines = [OrderDetailInline]
@@ -30,30 +34,47 @@ class OrderAdmin(admin.ModelAdmin):
         return obj.calculate_total_quantity()
     calculate_total_quantity.short_description = 'کل محصولاتط'
 
-    # تابع برای ایجاد خروجی Excel
     def export_to_excel(self, request, queryset):
         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         response['Content-Disposition'] = 'attachment; filename="orders.xlsx"'
 
-        # ایجاد یک کتاب کار با استفاده از openpyxl
         wb = Workbook()
         ws = wb.active
         ws.title = "Orders"
 
-        # ساخت سرستون‌ها
-        ws.append(['شناسه', 'آدرس کاربر', 'وضعیت', 'تاریخ پرداخت', 'قیمت نهایی'])
+        ws.append(['شناسه', 'آدرس کاربر', 'نام کاربر', 'شماره تماس', 'وضعیت', 'تاریخ پرداخت', 'محصول', 'تعداد', 'قیمت  کل خریداری شده'])
 
-        # افزودن داده‌ها
         for order in queryset:
-            ws.append([order.id, f"{order.user.ostan}, {order.user.shahrestan}, {order.user.street}, {order.user.postal_code}", order.status, order.payment_date, order.calculate_total_price()])
+            order_data = [
+                order.id,
+                f"{order.user.ostan}, {order.user.shahrestan}, {order.user.street}, {order.user.postal_code}",
+                f"{order.user.first_name},{order.user.last_name}",
+                order.user.phone_number,
+                order.status,
+                order.payment_date,
+                "",  # محصول
+                "",  # تعداد
+                "",  # قیمت خریداری شده
+            ]
 
-        # ذخیره فایل
+            order_details = OrderDetail.objects.filter(order=order)
+
+            for detail in order_details:
+                if detail == order_details.first():
+                    order_data[6] = detail.product.title
+                    order_data[7] = detail.count
+                    order_data[8] = detail.final_price
+                    ws.append(order_data.copy())
+                else:
+                    ws.append(["", "", "", "", "", "", detail.product.title, detail.count, detail.final_price])
+
+            ws.append(['', '', '', '', '', '', '', 'فروش کل:', order.calculate_total_price()])
+
         wb.save(response)
         return response
     
     export_to_excel.short_description = "خروجی Excel گرفتن"
 
-    # اضافه کردن عملیات به پنل مدیریت
     actions = ['export_to_excel']
 
     

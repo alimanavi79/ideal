@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     'jalali_date',
     'django_jalali',
     'widget_tweaks',
-    'iranian_cities'
+    'iranian_cities',
+    'rangefilter' 
 ]
 
 MIDDLEWARE = [

@@ -5,20 +5,17 @@
     <meta charset="UTF-8">
     <title>فاکتور خرید</title>
     <style>
-        /* استایل‌های مخصوص برای چاپ */
-        @page {
-            size: auto;
-            margin: 10mm;
-        }
-
+        /* General styles */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             direction: rtl;
             line-height: 1.6;
             background-color: #f4f4f4;
+            margin: 0;
             padding: 20px;
         }
 
+        /* Container styles */
         .container {
             width: 80%;
             margin: auto;
@@ -26,38 +23,64 @@
             padding: 30px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
+            border: 1px solid #ddd;
+            /* Added border for better separation */
         }
 
+        /* Header styles */
         .invoice-header {
             text-align: center;
             margin-bottom: 30px;
         }
 
         .invoice-header h2 {
-            font-size: 28px;
+            font-size: 32px;
+            /* Increased font size for emphasis */
             color: #333;
+            margin-bottom: 10px;
+            /* Adjusted margin for better spacing */
         }
 
         .invoice-header p {
-            font-size: 16px;
+            font-size: 18px;
+            /* Increased font size for better readability */
             color: #777;
-            margin-top: 10px;
+            margin-top: 5px;
+            /* Adjusted margin for better spacing */
         }
 
+        /* Details section styles */
         .invoice-details {
             margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            /* Lightened border for sections */
+            padding-bottom: 15px;
         }
 
+        .invoice-details h3 {
+            font-size: 24px;
+            /* Increased font size for section headings */
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .invoice-details p {
+            font-size: 16px;
+            color: #555;
+            margin: 5px 0;
+        }
+
+        /* Table styles */
         .invoice-table {
             width: 100%;
             border-collapse: collapse;
-            border: 1px solid #ccc;
             margin-top: 30px;
         }
 
         .invoice-table th,
         .invoice-table td {
-            border: 1px solid #ccc;
+            border: 1px solid #ddd;
+            /* Lightened border for table cells */
             padding: 12px;
             text-align: right;
             font-size: 16px;
@@ -66,20 +89,23 @@
 
         .invoice-table th {
             background-color: #f0f0f0;
+            font-size: 18px;
+            color: #444;
         }
 
         .invoice-table td:first-child {
-            width: 10%;
+            width: 7%;
+            /* Adjusted width for first column */
         }
 
         .invoice-table td:nth-child(2) {
-            width: 40%;
+            width: 30%;
         }
 
         .invoice-table td:nth-child(3),
         .invoice-table td:nth-child(4),
         .invoice-table td:nth-child(5) {
-            width: 16.67%;
+            width: 20%;
         }
 
         .invoice-table td:last-child {
@@ -87,22 +113,32 @@
             color: #f00;
         }
 
+        /* Total section styles */
         .invoice-total {
             margin-top: 20px;
             text-align: center;
+            border-top: 1px solid #ddd;
+            /* Added border for separation */
+            padding-top: 10px;
+            /* Increased padding for better spacing */
         }
 
         .invoice-total span {
             font-weight: bold;
-            font-size: 18px;
+            font-size: 20px;
             color: #333;
         }
 
+        /* Footer styles */
         .footer {
             text-align: center;
             margin-top: 40px;
             font-size: 14px;
             color: #888;
+            padding-top: 20px;
+            /* Increased padding for better spacing */
+            border-top: 1px solid #ddd;
+            /* Added border for separation */
         }
     </style>
 </head>
@@ -111,13 +147,22 @@
     <div class="container">
         <div class="invoice-header">
             <h2>فاکتور خرید شما</h2>
+        </div>
+        <div class="invoice-details">
+            <h5>شماره فاکتور: {{ order.id }}</h5>
             <p>تاریخ: {{ order.created_at|date:'d F Y' }}</p>
         </div>
         <div class="invoice-details">
-            <h3>وضعیت سفارش: {{ order.get_status_display }}</h3>
-            {% if order.tracking_code %}
-            <p>کد رهگیری: {{ order.tracking_code }}</p>
-            {% endif %}
+            <h3>مشخصات گیرنده:</h3>
+            <p>نام: {{ order.user.get_full_name }}</p>
+            <p>تلفن: {{ order.user.phone_number }}</p>
+            <p>آدرس: {{ order.user.street }}, {{ order.user.shahrestan }}, {{ order.user.ostan }}, {{order.user.postal_code }}</p>
+        </div>
+        <div class="invoice-details">
+            <h3>مشخصات فرستنده:</h3>
+            <p>نام: نام فرستنده</p>
+            <p>تلفن: شماره تلفن فرستنده</p>
+            <p>آدرس: آدرس فرستنده</p>
         </div>
         <table class="invoice-table">
             <thead>
@@ -125,6 +170,7 @@
                     <th>شناسه</th>
                     <th>محصول</th>
                     <th>قیمت واحد</th>
+                    <th>قیمت با تخفیف</th>
                     <th>تعداد</th>
                     <th>قیمت کل</th>
                 </tr>
@@ -135,6 +181,13 @@
                     <td>{{ detail.id }}</td>
                     <td>{{ detail.product.title }}</td>
                     <td>{{ detail.product.price }}</td>
+                    <td>
+                        {% if detail.product.discounted_price %}
+                        {{ detail.product.discounted_price }}
+                        {% else %}
+                        {{ detail.product.price }}
+                        {% endif %}
+                    </td>
                     <td>{{ detail.count }}</td>
                     <td>{{ detail.final_price }}</td>
                 </tr>
@@ -142,9 +195,19 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="4" style="text-align: center;"><span>جمع کل:</span></td>
+                    <td colspan="5" style="text-align: center;"><span>جمع کل:</span></td>
+                    <td>{{ order.calculate_total_price_without_discount }}</td>
+                </tr>
+                {% if order.discount_code %}
+                <tr>
+                    <td colspan="5" style="text-align: center;"><span>مقدار تخفیف:</span></td>
+                    <td>{{ order.discount_code.discount_percentage }}%</td>
+                </tr>
+                <tr>
+                    <td colspan="5" style="text-align: center;"><span>قیمت کل پس از تخفیف:</span></td>
                     <td>{{ order.calculate_total_price }}</td>
                 </tr>
+                {% endif %}
             </tfoot>
         </table>
         <div class="invoice-total">

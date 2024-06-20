@@ -141,3 +141,22 @@ class ProductGallery(models.Model):
     class Meta:
         verbose_name = 'تصویر گالری'
         verbose_name_plural = 'گالری تصاویر'
+
+from django.utils import timezone
+
+class DiscountCode(models.Model):
+    code = models.CharField(max_length=50, unique=True, verbose_name='کد تخفیف')
+    start_date = models.DateTimeField(verbose_name='زمان شروع')
+    end_date = models.DateTimeField(verbose_name='زمان پایان')
+    discount_percentage = models.IntegerField(verbose_name='درصد تخفیف')
+
+    def is_active(self):
+        now = timezone.now()
+        return self.start_date <= now <= self.end_date
+
+    def __str__(self):
+        return self.code
+
+    class Meta:
+        verbose_name = 'کد تخفیف'
+        verbose_name_plural = 'کدهای تخفیف'

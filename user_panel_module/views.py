@@ -11,7 +11,9 @@ from .forms import EditProfileModelForm, ChangePasswordForm
 from django.contrib.auth import logout
 from django.utils.decorators import method_decorator
 from iranian_cities.models import Shahrestan
-
+from product_module.models import DiscountCode
+from product_module.forms import DiscountCodeForm
+from django.contrib import messages
 
 
 @method_decorator(login_required, name='dispatch')
@@ -103,16 +105,44 @@ def user_panel_menu_component(request: HttpRequest):
     return render(request, 'user_panel_module/components/user_panel_menu_component.html')
 
 
+
+from django.contrib import messages
+
 @login_required
 def user_basket(request: HttpRequest):
     current_order, created = Order.objects.prefetch_related('orderdetail_set').get_or_create(is_paid=False, user_id=request.user.id)
     total_amount = current_order.calculate_total_price()
 
+    # اگر کاربر فرم کد تخفیف را ارسال کرده باشد
     if request.method == 'POST':
-        profile_form = EditProfileModelForm(request.POST, request.FILES, instance=request.user)
-        if profile_form.is_valid():
-            profile_form.save()
-            return redirect('user_basket_page2')  # اگر فرم معتبر بود، به مرحله بعدی هدایت شود
+        discount_form = DiscountCodeForm(request.POST)
+        if discount_form.is_valid():
+            code = discount_form.cleaned_data['code']
+            try:
+                discount_code = DiscountCode.objects.get(code=code)
+                if discount_code.is_active():
+                    # اعمال تخفیف به قیمت کل سبد خرید
+                    discount_amount = (total_amount * discount_code.discount_percentage) / 100
+                    total_amount -= discount_amount
+
+                    # ذخیره کد تخفیف در مدل Order
+                    current_order.discount_code = discount_code
+                    current_order.save()
+
+                    # ذخیره مبلغ تخفیف در مدل Order یا هر جای مناسب دیگر
+                    current_order.discount_amount = discount_amount
+                    current_order.save()
+
+                    # بازگرداندن به همین صفحه یا مرحله بعدی
+                    messages.success(request, "کد تخفیف با موفقیت اعمال شد.")
+                    return redirect('user_basket_page')
+                else:
+                    messages.error(request, "کد تخفیف منقضی شده است.")
+            except DiscountCode.DoesNotExist:
+                messages.error(request, "کد تخفیف وارد شده معتبر نیست.")
+    
+    else:
+        discount_form = DiscountCodeForm()
 
     profile_form = EditProfileModelForm(instance=request.user)
 
@@ -120,8 +150,24 @@ def user_basket(request: HttpRequest):
         'order': current_order,
         'sum': total_amount,
         'profile_form': profile_form,
+        'discount_form': discount_form,  # اضافه کردن فرم کد تخفیف به context
     }
     return render(request, 'user_panel_module/user_basket.html', context)
+
+
+@login_required
+def remove_discount_code(request):
+    if request.method == 'POST':
+        current_order = Order.objects.filter(user=request.user, is_paid=False).first()
+        if current_order:
+            current_order.discount_code = None
+            current_order.discount_amount = 0
+            current_order.save()
+            messages.success(request, "کد تخفیف با موفقیت از سبد خرید حذف شد.")
+        else:
+            messages.error(request, "سبد خرید شما خالی است یا کد تخفیفی برای حذف وجود ندارد.")
+    return redirect('user_basket_page')
+
 
 def user_basket2(request):
     # اینجا می‌توانید لازمه برای ایجاد فرم اطلاعات فردی کاربر را انجام دهید

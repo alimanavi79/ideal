@@ -1,17 +1,17 @@
 {% load poll_extras %}
 
 {% if order.orderdetail_set.all %}
-    <section id="cart_items">
-        <div class="container">
-            <div class="breadcrumbs">
-                <ol class="breadcrumb">
-                    <li><a href="#">خانـه</a></li>
-                    <li class="active">آدرس</li>
-                </ol>
-            </div><!--/breadcrums-->
-            <div class="table-responsive cart_info">
-                <table class="table table-condensed">
-                    <thead>
+<section id="cart_items">
+    <div class="container">
+        <div class="breadcrumbs">
+            <ol class="breadcrumb">
+                <li><a href="#">خانـه</a></li>
+                <li class="active">آدرس</li>
+            </ol>
+        </div><!--/breadcrums-->
+        <div class="table-responsive cart_info">
+            <table class="table table-condensed">
+                <thead>
                     <tr class="cart_menu">
                         <td class="image">کـالا</td>
                         <td class="description"></td>
@@ -20,79 +20,112 @@
                         <td class="total">مجمـوع</td>
                         <td></td>
                     </tr>
-                    </thead>
-                    <tbody>
+                </thead>
+                <tbody>
                     {% for detail in order.orderdetail_set.all %}
-                        <tr>
-                            <td class="cart_product">
-                                <a href=""><img src="{{ detail.product.image.url }}" width="75" alt=""></a>
-                            </td>
-                            <td class="cart_description">
-                                <h4><a href="" class="one-line-text">{{ detail.product.title }}</a></h4>
-                                <p>شناسـه : {{ detail.product.id }}</p>
-                            </td>
-                            <td class="cart_price">
-                                <p>{{ detail.product.price|three_digits_currency }}</p>
-                            </td>
-                            <td class="cart_quantity">
-                                <div class="cart_quantity_button">
-                                    <a class="cart_quantity_up cursor-pointer"
-                                       onclick="changeOrderDetailCount({{ detail.id }}, 'increase')"> + </a>
-                                    <input class="cart_quantity_input" type="text" name="quantity"
-                                           value="{{ detail.count }}"
-                                           autocomplete="off" size="2">
-                                    <a class="cart_quantity_down  cursor-pointer"
-                                       onclick="changeOrderDetailCount({{ detail.id }}, 'decrease')"> - </a>
-                                </div>
-                            </td>
-                            <td class="cart_total">
-                                <p class="cart_total_price"> {% multiply detail.count detail.product.price %} </p>
-                                {# <p class="cart_total_price"> {{ detail.get_total_price|three_digits_currency }} </p>#}
-                            </td>
-                            <td class="cart_delete">
-                                <a class="cart_quantity_delete" onclick="removeOrderDetail({{ detail.id }})"><i
-                                        class="fa fa-times"></i></a>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td class="cart_product">
+                            <a href=""><img src="{{ detail.product.image.url }}" width="75" alt=""></a>
+                        </td>
+                        <td class="cart_description">
+                            <h4><a href="" class="one-line-text">{{ detail.product.title }}</a></h4>
+                            <p>شناسـه : {{ detail.product.id }}</p>
+                        </td>
+                        <td class="cart_price">
+                            <span>
+                                {% if detail.product.discounted_price and detail.product.discounted_price < detail.product.price %} <span
+                                    style="text-decoration: line-through; font-size: 12px; color: grey;">
+                                    قیمت اصلی: {{ detail.product.price|three_digits_currency }}
+                            </span>
+                            <br>
+                            <span>
+                                قیمت با تخفیف: {{ detail.product.discounted_price|three_digits_currency }}
+                            </span>
+                            {% else %}
+                            <span>قیمت: {{ detail.product.price|three_digits_currency }}</span>
+                            {% endif %}
+                            </span>
+                        </td>
+                        <td class="cart_quantity">
+                            <div class="cart_quantity_button">
+                                <a class="cart_quantity_up cursor-pointer"
+                                    onclick="changeOrderDetailCount({{ detail.id }}, 'increase')"> + </a>
+                                <input class="cart_quantity_input" type="text" name="quantity"
+                                    value="{{ detail.count }}" autocomplete="off" size="2">
+                                <a class="cart_quantity_down  cursor-pointer"
+                                    onclick="changeOrderDetailCount({{ detail.id }}, 'decrease')"> - </a>
+                            </div>
+                        </td>
+                        <td class="cart_total">
+                            <p class="cart_total_price">
+                                {% if detail.product.discounted_price and detail.product.discounted_price < detail.product.price %} {% multiply detail.count detail.product.discounted_price %}
+                                    {% else %} {% multiply detail.count detail.product.price %} {% endif %} </p>
+                        </td>
+                        <td class="cart_delete">
+                            <a class="cart_quantity_delete" onclick="removeOrderDetail({{ detail.id }})"><i
+                                    class="fa fa-times"></i></a>
+                        </td>
+                    </tr>
                     {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+<style>
+    .profile-form {
+        max-width: 500px;
+        /* عرض حداکثر فرم */
+        margin: 0 auto;
+        /* مرکز چین کردن فرم */
+    }
+</style>
 
+<div class="profile-form">
+    <section id="do_action">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <!-- Discount Form -->
+                    <div class="discount-form">
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ discount_form.as_p }}
+                            <button type="submit" class="btn btn-default">اعمال کد تخفیف</button>
+                        </form>
+                    </div>
 
-                    </tbody>
-                </table>
+                    <!-- Total Area -->
+                    <div class="total_area">
+                        <ul>
+                            <li>مجمـوع سبـد خریـد <span>{{ sum|three_digits_currency }}</span></li>
+                            {% if order.discount_code %}
+                            <li>کد تخفیف: {{ order.discount_code.code }}</li>
+                            {% endif %}
+                        </ul>
+                        <a class="btn btn-default check_out" href="{% url 'user_basket_page2' %}">مرحله بعدی</a>
+                        {% if order.discount_code %}
+                        <form method="post" action="{% url 'remove_discount_code' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger">حذف کد تخفیف</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
     </section>
-    <style>.profile-form {
-        max-width: 500px; /* عرض حداکثر فرم */
-        margin: 0 auto; /* مرکز چین کردن فرم */
-    }</style>
-    <div class="profile-form">
-            <section id="do_action">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="total_area">
-                                <ul>
-                                    <li>مجمـوع سبـد خریـد <span>{{ sum|three_digits_currency }}</span></li>
-                                </ul>
-                                <!-- <a class="btn btn-default check_out" href="{% url 'request_payment' %}">پرداخت</a> -->
-                                <a class="btn btn-default check_out" href="{% url 'user_basket_page2' %}">مرحله بعدی</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-    </div>
-    
-    
+</div>
+
+
 {% else %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="alert alert-warning">
-                    <p>سبد خرید شما خالی می باشد</p>
-                </div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-warning">
+                <p>سبد خرید شما خالی می باشد</p>
             </div>
         </div>
     </div>
+</div>
 {% endif %}

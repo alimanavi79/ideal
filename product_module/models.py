@@ -104,6 +104,28 @@ class Product(models.Model):
     #             cursor.callproc('your_update_procedure_name', [self.id, self.title, self.category, self.image, ...])  # فراخوانی store procedure برای به‌روزرسانی اطلاعات
 
 
+class SpecificationKey(models.Model):
+    key = models.CharField(max_length=100, unique=True, verbose_name='کلید')
+    category = models.ForeignKey(ProductCategory, related_name='specification_keys', on_delete=models.CASCADE, verbose_name='دسته بندی')
+
+    class Meta:
+        verbose_name = 'کلید مشخصات'
+        verbose_name_plural = 'کلیدهای مشخصات'
+
+    def __str__(self):
+        return self.key
+    
+class TechnicalSpecification(models.Model):
+    product = models.ForeignKey(Product, related_name='technical_specifications', on_delete=models.CASCADE, verbose_name='محصول')
+    key = models.ForeignKey(SpecificationKey, related_name='technical_specifications', on_delete=models.CASCADE, verbose_name='کلید')
+    value = models.CharField(max_length=300, verbose_name='مقدار')
+
+    class Meta:
+        verbose_name = 'مشخصات فنی'
+        verbose_name_plural = 'مشخصات فنی'
+
+    def __str__(self):
+        return f"{self.product.title} - {self.key.key}: {self.value}"
 
 
 class ProductTag(models.Model):

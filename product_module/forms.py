@@ -15,3 +15,4 @@ class DiscountCodeForm(forms.Form):
         except DiscountCode.DoesNotExist:
             raise forms.ValidationError("کد تخفیف وارد شده معتبر نیست.")
         return code
+    

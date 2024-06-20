@@ -98,18 +98,21 @@
                     <!-- Total Area -->
                     <div class="total_area">
                         <ul>
-                            <li>مجمـوع سبـد خریـد <span>{{ sum|three_digits_currency }}</span></li>
                             {% if order.discount_code %}
+                            <span style="text-decoration: line-through; font-size: 12px; color: grey;">{{ order.calculate_total_price_without_discount|three_digits_currency }}</span>
+                            <li>مجمـوع سبـد خریـد <span >{{ sum|three_digits_currency }}</span></li>
                             <li>کد تخفیف: {{ order.discount_code.code }}</li>
+                            {%else%}
+                            <li>مجمـوع سبـد خریـد <span>{{ sum|three_digits_currency }}</span></li>
                             {% endif %}
                         </ul>
-                        <a class="btn btn-default check_out" href="{% url 'user_basket_page2' %}">مرحله بعدی</a>
                         {% if order.discount_code %}
                         <form method="post" action="{% url 'remove_discount_code' %}">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-sm btn-danger">حذف کد تخفیف</button>
                         </form>
                         {% endif %}
+                        <a class="btn btn-default check_out" href="{% url 'user_basket_page2' %}">مرحله بعدی</a>
                     </div>
                 </div>
             </div>

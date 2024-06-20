@@ -12,8 +12,6 @@
 
 {% block footer_references %}
 <script src="/static/lib/image-lightbox/js/lightbox.min.js"></script>
-{#
-<script src="/static/lib/image-lightbox/js/lightbox-plus-jquery.min.js"></script>#}
 {% endblock %}
 
 {% block content %}
@@ -35,29 +33,6 @@
                                     بزرگنمایـی
                                 </a>
                             </h3>
-                        </div>
-                        <div id="similar-product" class="carousel slide" data-ride="carousel">
-
-                            <!-- Wrapper for slides -->
-                            <div class="carousel-inner">
-                                {% for group in product_galleries_group %}
-                                <div class="item {% if forloop.first %}active{% endif %}">
-                                    {% for gallery in group %}
-                                    <a onclick="showLargeImage('{{ gallery.image.url }}')">
-                                        <img src="{{ gallery.image.url }}" width="75" height="75" alt="">
-                                    </a>
-                                    {% endfor %}
-                                </div>
-                                {% endfor %}
-                            </div>
-
-                            <!-- Controls -->
-                            <a class="right item-control" href="#similar-product" data-slide="next">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                            <a class="left item-control" href="#similar-product" data-slide="prev">
-                                <i class="fa fa-angle-left"></i>
-                            </a>
                         </div>
                     </div>
                     <div class="col-sm-7">
@@ -84,7 +59,8 @@
                                     <label>تعداد :</label>
                                     <input type="number" min="1" value="1" class="search_box" id="product-count">
                                     {% if product.inventory > 0 %}
-                                    <button onclick="addToCartOrWarn({{ product.id }}, {{ product.inventory }})" class="btn btn-fefault cart">
+                                    <button onclick="addToCartOrWarn({{ product.id }}, {{ product.inventory }})"
+                                        class="btn btn-fefault cart">
                                         <i class="fa fa-shopping-cart"></i>
                                         افزودن به سبد خرید
                                     </button>
@@ -111,7 +87,7 @@
                             </div>
                             <div>
                                 {% if product.inventory > 0 %}
-                                <p style="color: green;"><b>موجـودی :</b > در انبـار موجود می باشد</p>
+                                <p style="color: green;"><b>موجـودی :</b> در انبـار موجود می باشد</p>
                                 {% else %}
                                 <p style="color: red;"><b>موجـودی :</b> در انبـار موجود نمی باشد</p>
                                 {% endif %}
@@ -124,44 +100,36 @@
                 </div><!--/product-details-->
 
                 <div class="category-tab shop-details-tab"><!--category-tab-->
+                {% if has_technical_specifications %}
+                <div class="col-md-12">
+                    <h4>مشخصات فنی</h4>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>کلید</th>
+                                <th>مقدار</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for spec in technical_specifications %}
+                            <tr>
+                                <td>{{ spec.key.key }}</td>
+                                <td>{{ spec.value }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
                     <div class="col-sm-12">
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#details" data-toggle="tab">جزئیات</a></li>
-                            {% comment %}<li><a href="#reviews" data-toggle="tab">نظرات (5)</a></li>{% endcomment %}
                         </ul>
                     </div>
                     <div class="tab-content">
                         <div class="tab-pane fade active in" id="details">
                             <div class="col-md-12">
                                 {{ product.description | safe }}
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="reviews">
-                            <div class="col-sm-12">
-                                <ul>
-                                    <li><a href=""><i class="fa fa-user"></i>مشتـری 1</a></li>
-                                    <li><a href=""><i class="fa fa-clock-o"></i>12:41 ب . ظ</a></li>
-                                    <li><a href=""><i class="fa fa-calendar-o"></i>29 تیـر 1397</a></li>
-                                </ul>
-                                <p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده ازلورملورم
-                                    ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان
-                                    گرافیک است. چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و
-                                    برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای
-                                    کاربردی می باشد. کتابهای زیادی در شصت و سه درصد گذشته، حال و آینده شناخت فراوان
-                                    جامعه و متخصصان را می طلبد تا با نرم افزارها شناخت بیشتری را برای طراحان رایانه
-                                    ای علی الخصوص طراحان خلاقی و فرهنگ پیشرو در زبان فارسی ایجاد کرد.</p>
-                                <p><b>نظـر خود را بنویسیـد</b></p>
-                                <form action="#">
-                                    <span>
-                                        <input type="text" placeholder="نام و نام خانوادگـی">
-                                        <input type="email" placeholder="آدرس ایمیـل">
-                                    </span>
-                                    <textarea name=""></textarea>
-                                    <b>رتبـه : </b> <img src="/static/images/product-details/rating.png" alt="">
-                                    <button type="button" class="btn btn-default pull-left">
-                                        ارسـال
-                                    </button>
-                                </form>
                             </div>
                         </div>
                     </div>

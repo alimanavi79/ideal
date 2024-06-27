@@ -47,7 +47,6 @@ class Order(models.Model):
     def get_status_display_farsi(self):
         return dict(self.STATUS_CHOICES).get(self.status)
 
-                
     class Meta:
         verbose_name = 'سبد خرید'
         verbose_name_plural = 'سبدهای خرید کاربران'

@@ -50,7 +50,7 @@ class OrderAdmin(admin.ModelAdmin):
                 f"{order.user.ostan}, {order.user.shahrestan}, {order.user.street}, {order.user.postal_code}",
                 f"{order.user.first_name},{order.user.last_name}",
                 order.user.phone_number,
-                order.status,
+                order.get_status_display_farsi(),
                 order.payment_date,
                 "",  # محصول
                 "",  # تعداد
